@@ -12,6 +12,10 @@ def tahmin_etme(data):
   confidence_score = prediction[0][index]
 
   print("Class:", class_name[2:], end="")
+  if (class_name[2:] == "Your class name"):
+    print("nohut, buğday, arpa, tohum, karabuğday, darı, bezelye, mercimek ikram ediyorum :D")
+  else:
+    print("kırık mısır, tahıl taneleri, yulaf, buğday, pirinç ve kurutulmuş böcekler ikram ediyorum")
   print("Confidence Score:", confidence_score)
 
 # Disable scientific notation for clarity
