@@ -1,12 +1,24 @@
 from keras.models import load_model  # TensorFlow is required for Keras to work
 from PIL import Image, ImageOps  # Install pillow instead of PIL
 import numpy as np
+from google.colab import files
+import io
+
+def tahmin_etme(data):
+  # Predicts the model
+  prediction = model.predict(data)
+  index = np.argmax(prediction)
+  class_name = class_names[index]
+  confidence_score = prediction[0][index]
+
+  print("Class:", class_name[2:], end="")
+  print("Confidence Score:", confidence_score)
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
 # Load the model
-model = load_model("keras_Model.h5", compile=False)
+model = load_model("keras_model.h5", compile=False)
 
 # Load the labels
 class_names = open("labels.txt", "r").readlines()
@@ -17,10 +29,18 @@ class_names = open("labels.txt", "r").readlines()
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # Replace this with the path to your image
-image = Image.open("<IMAGE_PATH>").convert("RGB")
+image = files.upload()
 
-# resizing the image to be at least 224x224 and then cropping from the center
+# Get the first uploaded image
+image_name = next(iter(image))
+image_data = image[image_name]
+
+# Create an Image object from the uploaded image data
+image = Image.open(io.BytesIO(image_data))
+
+# Resize the image
 size = (224, 224)
+
 image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
 
 # turn the image into a numpy array
@@ -32,12 +52,5 @@ normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
 # Load the image into the array
 data[0] = normalized_image_array
 
-# Predicts the model
-prediction = model.predict(data)
-index = np.argmax(prediction)
-class_name = class_names[index]
-confidence_score = prediction[0][index]
+tahmin_etme(data)
 
-# Print prediction and confidence score
-print("Class:", class_name[2:], end="")
-print("Confidence Score:", confidence_score)
